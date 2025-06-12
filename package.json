@@ -1,0 +1,54 @@
+{
+  "name": "@fizzwiz/sorted",
+  "version": "0.0.0-dev.0",
+  "description": "Sorted Collections for JavaScript",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fizzwiz/sorted.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "collections",
+    "sorted"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "author": "roberto venditti <err3vi@gmail.com>",
+  "files": [
+    "README.md",
+    "dist/sorted.bundle.js",
+    "src/main/"
+  ],
+  "type": "module",
+  "devDependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "assert": "2.0.0",
+    "babel-loader": "^9.1.2",
+    "mocha": "^10.8.2",
+    "path": "^0.12.7",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "exports": {
+    "./*": "./src/main/*"
+  },
+  "scripts": {
+    "test": "mocha --recursive ./src/test/",
+    "doc": "jsdoc -r -c ./jsdoc.json",
+    "build": "webpack --mode production"
+  },
+  "bugs": {
+    "url": "https://github.com/@fizzwiz/sorted/issues"
+  },
+  "homepage": "https://github.com/@fizzwiz/sorted#readme",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "@fizzwiz/fluent": "^0.0.0-dev.1"
+  }
+}

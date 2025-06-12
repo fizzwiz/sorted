@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fizzwiz Library Test</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-radius: 4px;
+    }
+  </style>
+
+   <!-- 👇 Replace with the actual path to your bundled JS -->
+   <script src="./sorted.bundle.js"></script>
+   <script >
+    function log(message) {
+      const output = document.getElementById('output');
+      output.textContent = typeof message === 'string'
+        ? message
+        : JSON.stringify(message, null, 2);
+    }
+
+    async function testArrayQueue() {
+      try {
+        const q = new sorted.ArrayQueue(true);
+        q.add('a');
+        q.add('b');
+        q.add('c');
+        const out = {
+          type: 'ArrayQueue',
+          items: [...q],
+          polled: q.poll(),
+          remaining: [...q]
+        };
+        log(out);
+      } catch (e) {
+        log('Error: ' + e.message);
+      }
+    }
+
+    async function testSortedArray() {
+      try {
+        const s = new sorted.SortedArray(sorted.ORDER.ASCENDING);
+        s.add(5);
+        s.add(2);
+        s.add(4);
+        const out = {
+          type: 'SortedArray',
+          items: [...s],
+          has3: s.has(3),
+          has4: s.has(4)
+        };
+        log(out);
+      } catch (e) {
+        log('Error: ' + e.message);
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Fizzwiz Library Test</h1>
+
+  <button onclick="testArrayQueue()">Test ArrayQueue</button>
+  <button onclick="testSortedArray()">Test SortedArray</button>
+
+  <h2>Output</h2>
+  <pre id="output">Waiting for test...</pre>
+
+ 
+
+</body>
+</html>
