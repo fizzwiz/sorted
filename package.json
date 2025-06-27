@@ -23,7 +23,6 @@
   ],
   "type": "module",
   "devDependencies": {
-    "@babel/cli": "^7.22.5",
     "@babel/core": "^7.22.5",
     "@babel/preset-env": "^7.22.5",
     "assert": "2.0.0",
@@ -49,6 +48,6 @@
     "doc": "docs"
   },
   "dependencies": {
-    "@fizzwiz/fluent": "^0.0.0-dev.1"
+    "@fizzwiz/fluent": "^0.0.0-dev.2"
   }
 }
