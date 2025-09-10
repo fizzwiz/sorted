@@ -1,12 +1,12 @@
 // Grouped re-exports for documentation and bundling
-import * as core from './core/index.js';
-import * as queue from './queue/index.js';
+import { Collection } from './core/Collection.js'; 
+import { Queue } from './core/Queue.js';
+import {ArrayQueue} from './queue/ArrayQueue.js';
+import {SortedArray} from './queue/SortedArray.js'
+import { ORDER } from './global.js';
 
-// Export namespaces for structured imports
-export { core, queue };
+export {Collection, Queue, ArrayQueue, SortedArray, ORDER};
 
-// Flatten key exports for convenience
-export { Collection, Queue } from './core/index.js';
-export { ArrayQueue, SortedArray } from './queue/index.js';
-export { ORDER } from './global.js';
+
+
 

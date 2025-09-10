@@ -48,6 +48,6 @@
     "doc": "docs"
   },
   "dependencies": {
-    "@fizzwiz/fluent": "^0.0.0-dev.2"
+    "@fizzwiz/fluent": "^0.0.0-dev.5"
   }
 }
