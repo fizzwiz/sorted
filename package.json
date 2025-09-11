@@ -33,7 +33,7 @@
     "webpack-cli": "^5.1.4"
   },
   "exports": {
-    "./*": "./src/main/*"
+    ".": "./src/main/index.js"
   },
   "scripts": {
     "test": "mocha --recursive ./src/test/",

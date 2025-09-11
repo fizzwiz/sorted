@@ -53,12 +53,13 @@ export class Queue extends Collection {
 	/**
 	 * Selects and keeps the first `n` items of the queue, removing all other items.
 	 * 
-	 * @param {number} n - Number of items to keep in the queue.
+	 * @param {number} n - Number of items to keep in the queue
 	 * @param {boolean} [first=true] - If true, selects items from the start; if false, from the end.
 	 * @returns {Array<any>} An array containing the discarded items removed from the queue.
 	 * 
 	 */
 	select(n, first = true) {
+		if (n < 0) n = 0;
 		const m = this.n() - n;
 		const got = new Array(m < 0 ? 0 : m).fill(undefined);
 
