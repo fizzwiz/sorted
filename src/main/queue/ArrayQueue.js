@@ -126,6 +126,7 @@ export class ArrayQueue extends Queue {
 	 */
 	clear() {
 		this.items.length = 0;
+		return true;
 	}
 	
 	/**

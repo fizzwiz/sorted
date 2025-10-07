@@ -73,7 +73,7 @@ export class AsyncCollection extends AsyncEach {
 	/**
 	 * Removes all items from the collection.
 	 * @abstract
-	 * @returns {Promise<void>}
+	 * @returns {Promise<Boolean>}
 	 */
 	async clear() {
 		throw new Error("Abstract method: clear()");

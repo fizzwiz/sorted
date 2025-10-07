@@ -78,6 +78,7 @@ export class Collection extends Each {
 	/**
 	 * Removes all items from the collection.
 	 * @abstract
+	 * @returns {boolean} True if the collection was cleared.
 	 */
 	clear() {
 		throw new Error("Abstract method: clear()");
