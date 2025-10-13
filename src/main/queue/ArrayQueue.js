@@ -1,6 +1,6 @@
 import { Queue } from "../core/Queue.js";
 import { Collection } from "../core/Collection.js";
-import { Each } from "@fizzwiz/fluent/core/Each.js";
+import { Each } from "@fizzwiz/fluent";
 
 /**
  * A basic queue implementation based on an internal array.

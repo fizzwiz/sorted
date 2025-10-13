@@ -1,5 +1,4 @@
 import { Queue } from "../core/Queue.js";
-import { Collection } from "../core/Collection.js";
 import { ORDER } from "../global.js";
 import { ArrayQueue } from "./ArrayQueue.js";
 
