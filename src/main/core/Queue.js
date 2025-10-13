@@ -1,4 +1,4 @@
-import { Each } from "@fizzwiz/fluent/core/Each.js";
+import { Each } from "@fizzwiz/fluent";
 import { Collection } from "./Collection.js";
 
 /**
