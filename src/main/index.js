@@ -10,6 +10,9 @@ import { Queue } from "./core/Queue.js";
 // Queue implementations
 import { ArrayQueue } from "./queue/ArrayQueue.js";
 import { SortedArray } from "./queue/SortedArray.js";
+import { CommonCollection } from "./queue/CommonCollection.js";
+import { Classifier } from "./queue/Classifier.js";
+import { TrueSet } from "./queue/TrueSet.js";
 
 // Global constants
 import { ORDER } from "./global.js";
@@ -21,6 +24,9 @@ export {
   Queue,
   ArrayQueue,
   SortedArray,
+  CommonCollection,
+  Classifier,
+  TrueSet,
   ORDER,
 };
 
@@ -41,6 +47,8 @@ export {
  *
  * - {@link ArrayQueue} — array-backed queue, ordered by insertion (FIFO/LIFO).
  * - {@link SortedArray} — queue/collection backed by a sorted array, ordered by a comparator.
+ * - {@link Classifier} — queue/collection of arrays as paths of a tree of SortedArrays.
+ * - {@link TrueSet} - queue/collection of items aggregated by a representation function.
  * @module queue
  */
 

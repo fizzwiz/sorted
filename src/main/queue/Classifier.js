@@ -1,11 +1,10 @@
 import { Collection } from "../core/Collection.js";
 import { Queue } from "../core/Queue.js";
-import { Path } from "@fizzwiz/fluent/util/Path.js";
-import { Each } from "@fizzwiz/fluent/core/Each.js";
-import { What } from "@fizzwiz/fluent/core/What.js";
+import { Path, Each, What } from "@fizzwiz/fluent";
 import { ArrayQueue } from "./ArrayQueue.js";
 import { SortedArray } from "./SortedArray.js";
-import { ORDER } from "../../../src/main/global.js";
+import { ORDER } from "../global.js";
+import { Search } from "@fizzwiz/prism";
 
 /**
  * The {@link Classifier} is a {@link Collection} of arrays. Each arrays is stored
@@ -64,12 +63,12 @@ export class Classifier extends Queue {
 	 * @param {Function} [sorter=()=>ORDER.ASCENDING] A `function(path, key)` returning a comparator in correspondence of a `path `and a `key` as arguments
 	 * @param {Classifier.Node} [root=undefined] The [root](#root) node for the inner tree structure
 	 */    
-    constructor(sorter=()=> ORDER.ASCENDING, root=Classifier.Node.of(undefined, What.what(sorter, new Path()))) {
+    constructor(sorter=()=> ORDER.ASCENDING, root=Classifier.Node.of(undefined, sorter(new Path()))) {
         super();
 		this._root = root;
 		this._sorter = sorter;
 
-		this._defaultView = new Classifier.View(this, Path.of([undefined, root]))
+		this._defaultView = new Classifier.View(this, Path.of([undefined, root]));
     }
 
 	/**
@@ -282,7 +281,7 @@ assert.deepEqual(cls.toArray(), [['b', 1], ['c', 1]])
 					return undefined
 				} 
 				
-				const keyComparator = What.what(sorter, got);
+				const keyComparator = sorter(got);
 				child = Classifier.Node.of(key, keyComparator);
 				current.children.items.splice(index, 0, child);
 			} 
@@ -533,11 +532,12 @@ Classifier.View = class extends Queue {
 	[Symbol.iterator]() {
 		const 
 			space = path => path.across(path.length? path.last.children.view(this.direct): this.path.last[1].children.view(this.direct)),
-			search = new ArrayQueue(false)
-				.let(new Path())
-					.search(space)
-						.which(path => path.length && 0 < path.last.nin)
-							.then(path => path.toArray(path.length, node => node.key));
+			search = new Search()
+				.from(new Path())
+					.through(space)
+						.via(new ArrayQueue(false))
+							.which(path => path.length && 0 < path.last.nin)
+								.then(path => path.toArray(path.length, node => node.key));
 
 		return search[Symbol.iterator]()
 	}

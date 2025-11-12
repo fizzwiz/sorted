@@ -12,11 +12,15 @@
  */
 export const ORDER = {
 
-    /** Sorts primitives or objects with numeric `.value` in ascending order */
-    ASCENDING: (a, b) => (a?.value ?? a) - (b?.value ?? b),
+    /** Sorts primitives in ascending order */
+    ASCENDING: (a, b) => a < b
+        ? -1
+        : a === b
+            ? 0
+            : 1,
 
-    /** Sorts primitives or objects with numeric `.value` in descending order */
-    DESCENDING: (a, b) => (b?.value ?? b) - (a?.value ?? a),
+    /** Sorts primitives in descending order */
+    DESCENDING: (a, b) => -ORDER.ASCENDING(a, b),
 
     /** No sorting; preserves insertion order */
     INSERTION: undefined,

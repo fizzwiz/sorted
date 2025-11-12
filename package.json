@@ -1,6 +1,6 @@
 {
   "name": "@fizzwiz/sorted",
-  "version": "0.0.0-dev.2",
+  "version": "0.0.0-dev.3",
   "description": "Sorted Collections for JavaScript",
   "repository": {
     "type": "git",
@@ -8,8 +8,10 @@
   },
   "keywords": [
     "JavaScript",
-    "collections",
-    "sorted"
+    "collection",
+    "sorted",
+    "equivalence",
+    "representation"
   ],
   "publishConfig": {
     "access": "public"
@@ -48,6 +50,7 @@
     "doc": "docs"
   },
   "dependencies": {
-    "@fizzwiz/fluent": "^0.0.0-dev.5"
+    "@fizzwiz/fluent": "^0.0.0-dev.12",
+    "@fizzwiz/prism": "^0.0.0-dev.1"
   }
 }
