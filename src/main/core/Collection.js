@@ -1,30 +1,27 @@
 import { Each } from "@fizzwiz/fluent";
 
 /**
- * Abstract base class for iterable collections.
+ * Abstract base class for iterable collections.<br>
+ * The `Collection` class defines a unified, database-inspired interface<br>
+ * for both sorted and unsorted data structures. It combines abstract<br>
+ * collection primitives with concrete CRUD-style operations and utility<br>
+ * methods.<br><br>
  *
- * The `Collection` class defines a unified, database-inspired interface
- * for both sorted and unsorted data structures. It combines abstract
- * collection primitives with concrete CRUD-style operations and utility
- * methods.
+ * <b>Abstract Methods</b>:<br>
+ * Subclasses must implement the following:<br>
+ * - {@link n} — number of items in the collection<br>
+ * - {@link has} — check item membership<br>
+ * - {@link add} — add a new item<br>
+ * - {@link remove} — remove an existing item<br>
+ * - {@link clear} — clear all items<br>
+ * - {@link get} — retrieve items matching a query<br>
+ * - {@link [Symbol.iterator]} — iterate over the collection<br><br>
  *
- * ## Abstract Methods
- * Subclasses must implement the following:
- *
- * - {@link n} — number of items in the collection
- * - {@link has} — check item membership
- * - {@link add} — add a new item
- * - {@link remove} — remove an existing item
- * - {@link clear} — clear all items
- * - {@link get} — retrieve items matching a query
- * - {@link [Symbol.iterator]} — iterate over the collection
- *
- * ## Concrete Methods
- * Built on top of the abstract primitives, the base class provides:
- *
- * - CRUD operations: {@link create}, {@link read}, {@link update}, {@link delete}
- * - Query helpers: {@link query}, {@link readAll}
- * - Utility methods: {@link isEmpty}, {@link let}, {@link letAll}, {@link removeAll}, {@link deleteAll}
+ * <b>Concrete Methods</b>:<br>
+ * Built on top of the abstract primitives, the base class provides:<br>
+ * - CRUD operations: {@link create}, {@link read}, {@link update}, {@link delete}<br>
+ * - Query helpers: {@link query}, {@link readAll}<br>
+ * - Utility methods: {@link isEmpty}, {@link let}, {@link letAll}, {@link removeAll}, {@link deleteAll}<br>
  */
 export class Collection extends Each {
 	constructor() {
@@ -194,6 +191,19 @@ export class Collection extends Each {
 	}
 
 	// -----------------------------------------------------
+	// Aliases
+	// -----------------------------------------------------
+
+  	/**
+	 * Size getter (ergonomic alias for n()).
+	 * Read-only property.
+	 * @returns {number}
+	*/
+	get size() {
+		return this.n();
+	}
+
+	// -----------------------------------------------------
 	// Utility methods
 	// -----------------------------------------------------
 
@@ -240,4 +250,5 @@ export class Collection extends Each {
 		}
 		return removed;
 	}
+
 }

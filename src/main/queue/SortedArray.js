@@ -3,18 +3,18 @@ import { ORDER } from "../global.js";
 import { ArrayQueue } from "./ArrayQueue.js";
 
 /**
- * A {@link Queue} that keeps its items **sorted** using a comparator.
- * 
- * - Uniqueness is based on the comparator result (`0`).
- * - Insertion maintains order.
- * - Use {@link ORDER} for common comparators.
- * 
- * Example:
- * ```js
+ * A {@link Queue} that keeps its items <b>sorted</b> using a comparator.<br><br>
+ *
+ * - Uniqueness is based on the comparator result (`0`).<br>
+ * - Insertion maintains order.<br>
+ * - Use {@link ORDER} for common comparators.<br><br>
+ *
+ * Example:<br>
+ * <pre><code>
  * const queue = new SortedArray(ORDER.ASCENDING);
  * queue.add(3);
  * queue.add(1);  // inserted before 3
- * ```
+ * </code></pre>
  */
 export class SortedArray extends ArrayQueue {
 

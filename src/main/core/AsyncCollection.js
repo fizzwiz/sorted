@@ -1,27 +1,25 @@
 import { AsyncEach } from "@fizzwiz/fluent";
 
 /**
- * Abstract base class for asynchronous iterable collections.
+ * Abstract base class for asynchronous iterable collections.<br>
+ * The `AsyncCollection` class mirrors the synchronous {@link Collection} interface,<br>
+ * providing async CRUD-style operations and utilities for sorted or unsorted data structures.<br><br>
  *
- * The `AsyncCollection` class mirrors the synchronous {@link Collection}
- * interface, providing async CRUD-style operations and utilities for
- * sorted or unsorted data structures.
+ * <b>Abstract Methods</b>:<br>
+ * Subclasses must implement the following:<br>
+ * - {@link n} — number of items in the collection<br>
+ * - {@link has} — check item membership<br>
+ * - {@link add} — add a new item<br>
+ * - {@link remove} — remove an existing item<br>
+ * - {@link clear} — clear all items<br>
+ * - {@link get} — retrieve items matching a query<br>
+ * - {@link [Symbol.asyncIterator]} — iterate over the collection<br><br>
  *
- * ## Abstract Methods
- * Subclasses must implement the following:
- * - {@link n} — number of items in the collection
- * - {@link has} — check item membership
- * - {@link add} — add a new item
- * - {@link remove} — remove an existing item
- * - {@link clear} — clear all items
- * - {@link get} — retrieve items matching a query
- * - {@link [Symbol.asyncIterator]} — iterate over the collection
- *
- * ## Concrete Methods
- * Built on top of the abstract primitives:
- * - CRUD operations: {@link create}, {@link read}, {@link update}, {@link delete}
- * - Query helpers: {@link query}, {@link readAll}
- * - Utility methods: {@link isEmpty}, {@link let}, {@link addAll}, {@link removeAll}, {@link deleteAll}
+ * <b>Concrete Methods</b>:<br>
+ * Built on top of the abstract primitives:<br>
+ * - CRUD operations: {@link create}, {@link read}, {@link update}, {@link delete}<br>
+ * - Query helpers: {@link query}, {@link readAll}<br>
+ * - Utility methods: {@link isEmpty}, {@link let}, {@link addAll}, {@link removeAll}, {@link deleteAll}<br>
  */
 export class AsyncCollection extends AsyncEach {
 	constructor() {

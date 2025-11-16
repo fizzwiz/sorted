@@ -3,28 +3,28 @@ import { Collection } from "../core/Collection.js";
 import { Each } from "@fizzwiz/fluent";
 
 /**
- * A basic queue implementation based on an internal array.
+ * A basic queue implementation based on an internal array.<br><br>
  * 
- * In {@link ArrayQueue}, newly added items are always appended to the end of the internal array.
- * The extraction order is controlled by a Boolean flag:
+ * In {@link ArrayQueue}, newly added items are always appended to the end of the internal array.<br>
+ * The extraction order is controlled by a Boolean flag:<br><br>
  * 
- * - {@link ArrayQueue#fifo | fifo}  
+ * <b>Flag</b>:<br>
+ * - {@link ArrayQueue#fifo | fifo}<br><br>
  * 
- * When `fifo` is `true`, items follow First-In-First-Out (FIFO) behavior; otherwise, they follow LIFO.
+ * When `fifo` is `true`, items follow First-In-First-Out (FIFO) behavior; otherwise, they follow LIFO.<br><br>
  * 
- * Notably, all items are treated as unique: no equivalence or identity checking is used.
- * Even identical items are considered distinct, and:
+ * Notably, all items are treated as unique: no equivalence or identity checking is used.<br>
+ * Even identical items are considered distinct, and:<br><br>
  * 
- * - {@link Collection#has}
- * - {@link Collection#remove}
+ * - {@link Collection#has}<br>
+ * - {@link Collection#remove}<br><br>
  * 
- * always return `false`.
+ * always return `false`.<br><br>
  * 
- * The class is optimized for usage of:
- * - {@link ArrayQueue#add}
- * - {@link ArrayQueue#peek}
- * - {@link ArrayQueue#poll}
- * 
+ * The class is optimized for usage of:<br>
+ * - {@link ArrayQueue#add}<br>
+ * - {@link ArrayQueue#peek}<br>
+ * - {@link ArrayQueue#poll}<br>
  */
 export class ArrayQueue extends Queue {
 	

@@ -29,6 +29,7 @@
     "@babel/preset-env": "^7.22.5",
     "assert": "2.0.0",
     "babel-loader": "^9.1.2",
+    "jsdoc": "^4.0.5",
     "mocha": "^10.8.2",
     "path": "^0.12.7",
     "webpack": "^5.88.0",
@@ -50,7 +51,6 @@
     "doc": "docs"
   },
   "dependencies": {
-    "@fizzwiz/fluent": "^0.0.0-dev.12",
-    "@fizzwiz/prism": "^0.0.0-dev.1"
+    "@fizzwiz/fluent": "^0.0.0-dev.12"
   }
 }

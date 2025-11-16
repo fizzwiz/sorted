@@ -2,18 +2,18 @@ import { Each } from "@fizzwiz/fluent";
 import { Collection } from "./Collection.js";
 
 /**
- * The {@link Queue} class extends {@link Collection} and acts as a 
- * template for defining essential methods that every sorted collection should implement:
- * 
- * - [peek()](#peek)
- * - [poll()](#poll) 
- * - [reverse()](#reverse)
- *  
- * It also provides concrete implementations based on these abstract methods, 
- * inherited by all subclasses of sorted collections: 
- * 
- *  - [select()](#select)
- * 
+ * The {@link Queue} class extends {@link Collection} and acts as a<br>
+ * template for defining essential methods that every sorted collection should implement:<br><br>
+ *
+ * <b>Abstract Methods</b>:<br>
+ * - [peek()](#peek)<br>
+ * - [poll()](#poll)<br>
+ * - [reverse()](#reverse)<br><br>
+ *
+ * <b>Concrete Methods</b>:<br>
+ * Based on the abstract methods, these are inherited by all subclasses<br>
+ * of sorted collections:<br>
+ * - [select()](#select)<br>
  */
 export class Queue extends Collection {
 	
@@ -38,7 +38,9 @@ export class Queue extends Collection {
 	 * @returns {any} The extracted item.
 	 */
 	poll(first = true) {
-		throw new Error('Abstract method: poll() must be implemented by subclass.');
+		const got = this.peek(first);
+		this.remove(got);
+		return got;
 	}
 
 	/**

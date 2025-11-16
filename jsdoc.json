@@ -1,25 +1,23 @@
 {
-    "source": {
-        "include": ["./src/main"]
-    },
-    
-    "opts": {
-        "destination": "./docs",
-        "readme": "./README.md"
-    },
+  "source": {
+    "include": ["src/main"],
+    "includePattern": ".js$",
+    "excludePattern": "(node_modules/|docs)"
+  },
+  "opts": {
+    "destination": "./docs/",
+    "recurse": true,
+    "readme": "./README.md"
+  },
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true
+  },
 
-    "templates": {
-        "default": {
-            "outputSourceFiles": false
-        },
+  "plugins": [
+    "plugins/markdown"
+  ]
 
-        "cleverLinks": true  
-    },
-
-    "plugins": ["plugins/markdown"],
-
-    "tags": {
-        "allowUnknownTags": true,
-        "dictionaries": ["jsdoc", "closure"]
-    }    
 }
+
+  

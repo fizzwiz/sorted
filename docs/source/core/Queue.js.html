@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Source: core/Queue.js</title>
+  <link rel="stylesheet" href="../styles/jsdoc-default.css">
+  <link rel="stylesheet" href="../styles/prism.css">
+</head>
+<body class="source-page">
+  <h1 class="source-page-title">Source: core/Queue.js</h1>
+  <pre class="line-numbers language-javascript"><code class="language-javascript">import { Each } from "@fizzwiz/fluent";
+import { Collection } from "./Collection.js";
+
+/**
+ * The {@link Queue} class extends {@link Collection} and acts as a&lt;br&gt;
+ * template for defining essential methods that every sorted collection should implement:&lt;br&gt;&lt;br&gt;
+ *
+ * &lt;b&gt;Abstract Methods&lt;/b&gt;:&lt;br&gt;
+ * - [peek()](#peek)&lt;br&gt;
+ * - [poll()](#poll)&lt;br&gt;
+ * - [reverse()](#reverse)&lt;br&gt;&lt;br&gt;
+ *
+ * &lt;b&gt;Concrete Methods&lt;/b&gt;:&lt;br&gt;
+ * Based on the abstract methods, these are inherited by all subclasses&lt;br&gt;
+ * of sorted collections:&lt;br&gt;
+ * - [select()](#select)&lt;br&gt;
+ */
+export class Queue extends Collection {
+	
+	constructor() {
+		super();
+	}
+
+	/**
+	 * Retrieves the first item of `this` {@link Queue}.
+	 * 
+	 * @param {boolean} [first=true] If false, retrieves the last item instead.
+	 * @returns {any} The retrieved item.
+	 */
+	peek(first = true) {
+		throw new Error('Abstract method: peek() must be implemented by subclass.');
+	}
+
+	/**
+	 * Extracts (removes and returns) the first item of `this` {@link Queue}.
+	 * 
+	 * @param {boolean} [first=true] If false, extracts the last item instead.
+	 * @returns {any} The extracted item.
+	 */
+	poll(first = true) {
+		const got = this.peek(first);
+		this.remove(got);
+		return got;
+	}
+
+	/**
+	 * Provides an iterable reversed view of `this` {@link Queue}.
+	 * 
+	 * @returns {Each&lt;any&gt;} An iterable over the queue's elements in reverse order.
+	 */
+	reverse() {
+		throw new Error('Abstract method: reverse() must be implemented by subclass.');
+	}
+	
+	/**
+	 * Selects and keeps the first `n` items of the queue, removing all other items.
+	 * 
+	 * @param {number} n - Number of items to keep in the queue
+	 * @param {boolean} [first=true] - If true, selects items from the start; if false, from the end.
+	 * @returns {Array&lt;any&gt;} An array containing the discarded items removed from the queue.
+	 * 
+	 */
+	select(n, first = true) {
+		if (n &lt; 0) n = 0;
+		const m = this.n() - n;
+		const got = new Array(m &lt; 0 ? 0 : m).fill(undefined);
+
+		let i = first ? got.length - 1 : 0;
+		const inc = first ? -1 : 1;
+		
+		while (this.n() &gt; n) {
+			const next = this.poll(!first);
+			got[i] = next;
+			i += inc;
+		}
+		
+		return got;
+	}
+
+}
+</code></pre>
+  <script src="../javascript/prism.js"></script>
+</body>
+</html>

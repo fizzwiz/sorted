@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: queue/ArrayQueue.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: queue/ArrayQueue.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Queue } from "../core/Queue.js";
+import { Collection } from "../core/Collection.js";
+import { Each } from "@fizzwiz/fluent";
+
+/**
+ * A basic queue implementation based on an internal array.&lt;br>&lt;br>
+ * 
+ * In {@link ArrayQueue}, newly added items are always appended to the end of the internal array.&lt;br>
+ * The extraction order is controlled by a Boolean flag:&lt;br>&lt;br>
+ * 
+ * &lt;b>Flag&lt;/b>:&lt;br>
+ * - {@link ArrayQueue#fifo | fifo}&lt;br>&lt;br>
+ * 
+ * When `fifo` is `true`, items follow First-In-First-Out (FIFO) behavior; otherwise, they follow LIFO.&lt;br>&lt;br>
+ * 
+ * Notably, all items are treated as unique: no equivalence or identity checking is used.&lt;br>
+ * Even identical items are considered distinct, and:&lt;br>&lt;br>
+ * 
+ * - {@link Collection#has}&lt;br>
+ * - {@link Collection#remove}&lt;br>&lt;br>
+ * 
+ * always return `false`.&lt;br>&lt;br>
+ * 
+ * The class is optimized for usage of:&lt;br>
+ * - {@link ArrayQueue#add}&lt;br>
+ * - {@link ArrayQueue#peek}&lt;br>
+ * - {@link ArrayQueue#poll}&lt;br>
+ */
+export class ArrayQueue extends Queue {
+	
+	/**
+	 * Creates an {@link ArrayQueue}.
+	 * 
+	 * @param {boolean} [fifo=true] - If true, uses FIFO ordering; otherwise, LIFO.
+	 * @param {Array&lt;any>} [items=[]] - Optional initial array of items.
+	 */
+	constructor(fifo = true, items = []) {
+		super();
+		this._fifo = fifo;
+		this._items = items;
+	}
+
+	/** @returns {boolean} Whether extraction follows FIFO (otherwise, LIFO). */
+	get fifo() {
+		return this._fifo;
+	}
+
+	/** @returns {Array&lt;any>} The internal array of stored items. */
+	get items() {
+		return this._items;
+	}
+	
+	/** @returns {number} The number of items in the queue. */
+	n() {
+		return this.items.length;
+	}
+
+	/** 
+	 * Always returns `false` because this queue does not support item equivalence.
+	 * 
+	 * @returns {boolean}
+	 */
+	has(item) {
+		return false;
+	}
+
+	/** 
+	 * Appends an item to the queue.
+	 * 
+	 * @param {*} item - The item to add.
+	 * @returns {boolean} Always `true`.
+	 */
+	add(item) {
+		this.items.push(item);
+		return true;
+	}
+
+	/**
+	 * Always returns `false`. Items cannot be removed by value.
+	 * 
+	 * @param {*} item - The item to remove.
+	 * @returns {boolean} Always `false`.
+	 */
+	remove(item) {
+		return false;
+	}
+	
+	/**
+	 * Retrieves (without removing) the first or last item based on direction.
+	 * 
+	 * @param {boolean} [first=true] - If false, retrieves the last item.
+	 * @returns {*} The retrieved item.
+	 */
+	peek(first = true) {
+		return this.items[this.index(first)];
+	}
+
+	/**
+	 * Retrieves and removes the first or last item based on direction.
+	 * 
+	 * @param {boolean} [first=true] - If false, removes from the end.
+	 * @returns {*} The extracted item.
+	 */
+	poll(first = true) {
+		const index = this.index(first);
+		return index === 0 ? this.items.shift() : this.items.pop();
+	}
+
+	/**
+	 * Computes the internal array index for first or last item depending on `fifo`.
+	 * 
+	 * @param {boolean} first - Whether to return the index of the first or last item.
+	 * @returns {number} The index in the array.
+	 * @private
+	 */
+	index(first) {
+		if (this.fifo) {
+			return first ? 0 : this.items.length - 1;
+		} else {
+			return first ? this.items.length - 1 : 0;
+		}
+	}	
+	
+	/**
+	 * Removes all items from the queue.
+	 */
+	clear() {
+		this.items.length = 0;
+		return true;
+	}
+	
+	/**
+	 * Provides a default forward iterator over the queue.
+	 * 
+	 * @returns {Iterator&lt;any>}
+	 */
+	[Symbol.iterator]() {
+		return this.items[Symbol.iterator]();
+	}
+
+	/**
+	 * Returns an iterable view over this queue in reverse order.
+	 * 
+	 * @returns {Each&lt;any>} An `Each` instance yielding the queue items from end to start.
+	 * 
+	 * @remarks
+	 * The result is an {@link Each}, not a new {@link Queue} instance.
+	 * The original queue is left unchanged.
+	 */
+	reverse() {
+		const view = new Each();
+		const outer = this;
+		
+		view[Symbol.iterator] = function* () {
+			let i = outer.items.length - 1;
+			while (i >= 0) {
+				yield outer.items[i];
+				i--;
+			}
+		};
+
+		return view;
+	}
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-global.html">global</a></li><li><a href="module-queue.html">queue</a></li></ul><h3>Namespaces</h3><ul><li><a href="ORDER.html">ORDER</a></li><li><a href="SORTER.html">SORTER</a></li></ul><h3>Classes</h3><ul><li><a href="ArrayQueue.html">ArrayQueue</a></li><li><a href="AsyncCollection.html">AsyncCollection</a></li><li><a href="Classifier.html">Classifier</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Queue.html">Queue</a></li><li><a href="SortedArray.html">SortedArray</a></li><li><a href="TrueSet.html">TrueSet</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sun Nov 16 2025 15:52:28 GMT+0100 (Ora standard dell’Europa centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

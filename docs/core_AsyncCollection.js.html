@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/AsyncCollection.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: core/AsyncCollection.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { AsyncEach } from "@fizzwiz/fluent";
+
+/**
+ * Abstract base class for asynchronous iterable collections.&lt;br>
+ * The `AsyncCollection` class mirrors the synchronous {@link Collection} interface,&lt;br>
+ * providing async CRUD-style operations and utilities for sorted or unsorted data structures.&lt;br>&lt;br>
+ *
+ * &lt;b>Abstract Methods&lt;/b>:&lt;br>
+ * Subclasses must implement the following:&lt;br>
+ * - {@link n} — number of items in the collection&lt;br>
+ * - {@link has} — check item membership&lt;br>
+ * - {@link add} — add a new item&lt;br>
+ * - {@link remove} — remove an existing item&lt;br>
+ * - {@link clear} — clear all items&lt;br>
+ * - {@link get} — retrieve items matching a query&lt;br>
+ * - {@link [Symbol.asyncIterator]} — iterate over the collection&lt;br>&lt;br>
+ *
+ * &lt;b>Concrete Methods&lt;/b>:&lt;br>
+ * Built on top of the abstract primitives:&lt;br>
+ * - CRUD operations: {@link create}, {@link read}, {@link update}, {@link delete}&lt;br>
+ * - Query helpers: {@link query}, {@link readAll}&lt;br>
+ * - Utility methods: {@link isEmpty}, {@link let}, {@link addAll}, {@link removeAll}, {@link deleteAll}&lt;br>
+ */
+export class AsyncCollection extends AsyncEach {
+	constructor() {
+		super();
+	}
+
+	// ------------------ Abstract primitives ------------------
+
+	/**
+	 * Returns the number of items in the collection.
+	 * @abstract
+	 * @returns {Promise&lt;number>}
+	 */
+	async n() {
+		throw new Error("Abstract method: n()");
+	}
+
+	/**
+	 * Checks whether the collection contains the given item.
+	 * @abstract
+	 * @param {any} item - The item to test for membership.
+	 * @returns {Promise&lt;boolean>} True if the item is present.
+	 */
+	async has(item) {
+		throw new Error("Abstract method: has(item)");
+	}
+
+	/**
+	 * Adds the given item to the collection.
+	 * Semantics (allowing or rejecting duplicates) depend on the concrete subclass.
+	 * @abstract
+	 * @param {any} item - The item to add.
+	 * @returns {Promise&lt;boolean>} True if the collection was modified.
+	 */
+	async add(item) {
+		throw new Error("Abstract method: add(item)");
+	}
+
+	/**
+	 * Removes the given item from the collection.
+	 * @abstract
+	 * @param {any} item - The item to remove.
+	 * @returns {Promise&lt;boolean>} True if the collection was modified.
+	 */
+	async remove(item) {
+		throw new Error("Abstract method: remove(item)");
+	}
+
+	/**
+	 * Removes all items from the collection.
+	 * @abstract
+	 * @returns {Promise&lt;Boolean>}
+	 */
+	async clear() {
+		throw new Error("Abstract method: clear()");
+	}
+
+	/**
+	 * Retrieves items matching a given query.
+	 * In the simplest case, the query is an item, and all equivalent items
+	 * are returned. Subclasses may support richer query semantics.
+	 * @abstract
+	 * @param {any} query - The query object or value.
+	 * @returns {AsyncEach&lt;any>} A fluent AsyncEAch of all matching items.
+	 */
+	get(query) {
+		throw new Error("Abstract method: get(query)");
+	}
+
+	/**
+	 * Returns an async iterator over all items in the collection.
+	 * @abstract
+	 * @returns {AsyncIterator&lt;any>}
+	 */
+	[Symbol.asyncIterator]() {
+		throw new Error("Abstract method: Symbol.asyncIterator()");
+	}
+
+	// ------------------ CRUD operations ------------------
+
+	/**
+	 * **Create (C in CRUD)**
+	 * Adds a new item if it is not already present.
+	 * @param {any} item - The item to create.
+	 * @returns {Promise&lt;boolean>} True if the collection was modified.
+	 */
+	async create(item) {
+		if (await this.has(item)) return false;
+		return this.add(item);
+	}
+
+	/**
+	 * **Read (R in CRUD)**
+	 * Returns a single matching item, or `undefined` if none exist.
+	 * Retrieves the "first" match from {@link get}.
+	 * @param {any} item - The item or query to read.
+	 * @returns {Promise&lt;any|undefined>} The matching item or `undefined`.
+	 */
+	async read(item) {
+		if (await this.has(item)) {
+			for await (const val of this.get(item)) return val;
+		}
+		return undefined;
+	}
+
+	/**
+	 * **Read All (extended CRUD)**
+	 * Returns all items that match the given query.
+	 * @param {any} query - The query to evaluate.
+	 * @returns {AsyncIterable&lt;any>} All matching items.
+	 */
+	readAll(query) {
+		return this.get(query);
+	}
+
+	/**
+	 * **Update (U in CRUD)**
+	 * Replaces an existing item with a new one.
+	 * Inserts the new item if `upsert` is true and old item is not found.
+	 * @param {any} oldItem - The item to be replaced.
+	 * @param {any} newItem - The new item to insert.
+	 * @param {boolean} [upsert=false] - Whether to insert if `oldItem` is not found.
+	 * @returns {Promise&lt;boolean>} True if updated or inserted, false otherwise.
+	 */
+	async update(oldItem, newItem, upsert = false) {
+		if (await this.has(oldItem)) {
+			return (await this.remove(oldItem)) &amp;&amp; (await this.add(newItem));
+		} else if (upsert) {
+			return this.add(newItem);
+		}
+		return false;
+	}
+
+	/**
+	 * **Delete (D in CRUD)**
+	 * Removes an item from the collection.
+	 * @param {any} item - The item to delete.
+	 * @returns {Promise&lt;boolean>} True if the collection was modified.
+	 */
+	async delete(item) {
+		return this.remove(item);
+	}
+
+	/**
+	 * **Delete Many (extended CRUD)**
+	 * Removes all given items from the collection.
+	 * Alias of {@link removeAll}.
+	 * @param {Iterable&lt;any> | AsyncIterable&lt;any>} items - Items to delete.
+	 * @returns {Promise&lt;any[]>} List of actually removed items.
+	 */
+	async deleteAll(items) {
+		return this.removeAll(items);
+	}
+
+	// ------------------ Query helpers ------------------
+
+	/**
+	 * Alias for {@link get}, for database-style terminology.
+	 * @param {any} query - The query to evaluate.
+	 * @returns {AsyncEach&lt;any>} All matching items.
+	 */
+	query(query) {
+		return this.get(query);
+	}
+
+	// ------------------ Utility methods ------------------
+
+	/**
+	 * Checks whether the collection is empty.
+	 * @returns {Promise&lt;boolean>} True if the collection has no items.
+	 */
+	async isEmpty() {
+		return (await this.n()) === 0;
+	}
+
+	/**
+	 * Adds all items from an iterable.
+	 * @param {Iterable&lt;any> | AsyncIterable&lt;any>} items - Items to add.
+	 * @returns {Promise&lt;any[]>} List of actually added items.
+	 */
+	async addAll(items) {
+		const added = [];
+		for await (const item of items) {
+			if (await this.add(item)) added.push(item);
+		}
+		return added;
+	}
+
+	/**
+	 * Removes all given items from the collection.
+	 * @param {Iterable&lt;any> | AsyncIterable&lt;any>} items - Items to remove.
+	 * @returns {Promise&lt;any[]>} List of actually removed items.
+	 */
+	async removeAll(items) {
+		const removed = [];
+		for await (const item of items) {
+			if (await this.remove(item)) removed.push(item);
+		}
+		return removed;
+	}
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-global.html">global</a></li><li><a href="module-queue.html">queue</a></li></ul><h3>Namespaces</h3><ul><li><a href="ORDER.html">ORDER</a></li><li><a href="SORTER.html">SORTER</a></li></ul><h3>Classes</h3><ul><li><a href="ArrayQueue.html">ArrayQueue</a></li><li><a href="AsyncCollection.html">AsyncCollection</a></li><li><a href="Classifier.html">Classifier</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Queue.html">Queue</a></li><li><a href="SortedArray.html">SortedArray</a></li><li><a href="TrueSet.html">TrueSet</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sun Nov 16 2025 15:52:28 GMT+0100 (Ora standard dell’Europa centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

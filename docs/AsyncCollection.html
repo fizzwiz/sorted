@@ -30,27 +30,26 @@
     
         <h2><span class="attribs"><span class="type-signature"></span></span>AsyncCollection<span class="signature">()</span><span class="type-signature"></span></h2>
         
-            <div class="class-description"><p>Abstract base class for asynchronous iterable collections.</p>
-<p>The <code>AsyncCollection</code> class mirrors the synchronous <a href="Collection.html"><code>Collection</code></a>
-interface, providing async CRUD-style operations and utilities for
-sorted or unsorted data structures.</p>
-<h2>Abstract Methods</h2>
-<p>Subclasses must implement the following:</p>
+            <div class="class-description"><p>Abstract base class for asynchronous iterable collections.<br>
+The <code>AsyncCollection</code> class mirrors the synchronous <a href="Collection.html"><code>Collection</code></a> interface,<br>
+providing async CRUD-style operations and utilities for sorted or unsorted data structures.<br><br></p>
+<p><b>Abstract Methods</b>:<br>
+Subclasses must implement the following:<br></p>
 <ul>
-<li><code>n</code> — number of items in the collection</li>
-<li><code>has</code> — check item membership</li>
-<li><code>add</code> — add a new item</li>
-<li><code>remove</code> — remove an existing item</li>
-<li><code>clear</code> — clear all items</li>
-<li><code>get</code> — retrieve items matching a query</li>
-<li><code>[Symbol.asyncIterator]</code> — iterate over the collection</li>
+<li><code>n</code> — number of items in the collection<br></li>
+<li><code>has</code> — check item membership<br></li>
+<li><code>add</code> — add a new item<br></li>
+<li><code>remove</code> — remove an existing item<br></li>
+<li><code>clear</code> — clear all items<br></li>
+<li><code>get</code> — retrieve items matching a query<br></li>
+<li><code>[Symbol.asyncIterator]</code> — iterate over the collection<br><br></li>
 </ul>
-<h2>Concrete Methods</h2>
-<p>Built on top of the abstract primitives:</p>
+<p><b>Concrete Methods</b>:<br>
+Built on top of the abstract primitives:<br></p>
 <ul>
-<li>CRUD operations: <code>create</code>, <code>read</code>, <code>update</code>, <code>delete</code></li>
-<li>Query helpers: <code>query</code>, <code>readAll</code></li>
-<li>Utility methods: <code>isEmpty</code>, <code>let</code>, <code>addAll</code>, <code>removeAll</code>, <code>deleteAll</code></li>
+<li>CRUD operations: <code>create</code>, <code>read</code>, <code>update</code>, <code>delete</code><br></li>
+<li>Query helpers: <code>query</code>, <code>readAll</code><br></li>
+<li>Utility methods: <code>isEmpty</code>, <code>let</code>, <code>addAll</code>, <code>removeAll</code>, <code>deleteAll</code><br></li>
 </ul></div>
         
     
@@ -111,6 +110,11 @@ sorted or unsorted data structures.</p>
 
     
 
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line24">line 24</a>
+    </li></ul></dd>
     
 
     
@@ -272,6 +276,11 @@ Semantics (allowing or rejecting duplicates) depend on the concrete subclass.</p
     
 
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line57">line 57</a>
+    </li></ul></dd>
+    
 
     
 
@@ -429,6 +438,11 @@ Semantics (allowing or rejecting duplicates) depend on the concrete subclass.</p
     
 
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line203">line 203</a>
+    </li></ul></dd>
+    
 
     
 
@@ -533,6 +547,11 @@ Semantics (allowing or rejecting duplicates) depend on the concrete subclass.</p
 
     
 
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line76">line 76</a>
+    </li></ul></dd>
     
 
     
@@ -684,6 +703,11 @@ Adds a new item if it is not already present.</p>
 
     
 
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line109">line 109</a>
+    </li></ul></dd>
     
 
     
@@ -839,6 +863,11 @@ Removes an item from the collection.</p>
 
     
 
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line162">line 162</a>
+    </li></ul></dd>
     
 
     
@@ -999,6 +1028,11 @@ Alias of <code>removeAll</code>.</p>
     
 
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line173">line 173</a>
+    </li></ul></dd>
+    
 
     
 
@@ -1155,6 +1189,11 @@ are returned. Subclasses may support richer query semantics.</p>
     
 
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line88">line 88</a>
+    </li></ul></dd>
+    
 
     
 
@@ -1309,6 +1348,11 @@ are returned. Subclasses may support richer query semantics.</p>
     
 
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line46">line 46</a>
+    </li></ul></dd>
+    
 
     
 
@@ -1414,6 +1458,11 @@ are returned. Subclasses may support richer query semantics.</p>
     
 
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line194">line 194</a>
+    </li></ul></dd>
+    
 
     
 
@@ -1518,6 +1567,11 @@ are returned. Subclasses may support richer query semantics.</p>
 
     
 
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line36">line 36</a>
+    </li></ul></dd>
     
 
     
@@ -1668,6 +1722,11 @@ are returned. Subclasses may support richer query semantics.</p>
 
     
 
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line184">line 184</a>
+    </li></ul></dd>
     
 
     
@@ -1825,6 +1884,11 @@ Retrieves the &quot;first&quot; match from <code>get</code>.</p>
     
 
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line121">line 121</a>
+    </li></ul></dd>
+    
 
     
 
@@ -1980,6 +2044,11 @@ Returns all items that match the given query.</p>
     
 
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line134">line 134</a>
+    </li></ul></dd>
+    
 
     
 
@@ -2133,6 +2202,11 @@ Returns all items that match the given query.</p>
 
     
 
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line67">line 67</a>
+    </li></ul></dd>
     
 
     
@@ -2290,6 +2364,11 @@ Returns all items that match the given query.</p>
 
     
 
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line216">line 216</a>
+    </li></ul></dd>
     
 
     
@@ -2537,6 +2616,11 @@ Inserts the new item if <code>upsert</code> is true and old item is not found.</
     
 
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_AsyncCollection.js.html">core/AsyncCollection.js</a>, <a href="core_AsyncCollection.js.html#line147">line 147</a>
+    </li></ul></dd>
+    
 
     
 
@@ -2602,13 +2686,13 @@ Inserts the new item if <code>upsert</code> is true and old item is not found.</
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-global.html">global</a></li><li><a href="module-queue.html">queue</a></li></ul><h3>Classes</h3><ul><li><a href="ArrayQueue.html">ArrayQueue</a></li><li><a href="AsyncCollection.html">AsyncCollection</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Queue.html">Queue</a></li><li><a href="SortedArray.html">SortedArray</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ORDER">ORDER</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-global.html">global</a></li><li><a href="module-queue.html">queue</a></li></ul><h3>Namespaces</h3><ul><li><a href="ORDER.html">ORDER</a></li><li><a href="SORTER.html">SORTER</a></li></ul><h3>Classes</h3><ul><li><a href="ArrayQueue.html">ArrayQueue</a></li><li><a href="AsyncCollection.html">AsyncCollection</a></li><li><a href="Classifier.html">Classifier</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Queue.html">Queue</a></li><li><a href="SortedArray.html">SortedArray</a></li><li><a href="TrueSet.html">TrueSet</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Oct 13 2025 20:34:42 GMT+0200 (Ora legale dell’Europa centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sun Nov 16 2025 15:52:28 GMT+0100 (Ora standard dell’Europa centrale)
 </footer>
 
 <script> prettyPrint(); </script>

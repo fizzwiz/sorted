@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Namespace: SORTER</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Namespace: SORTER</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>SORTER</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Factory functions that create <code>sorter</code> functions.</p>
+<p>A <code>sorter(node)</code> function must return a tuple:</p>
+<pre><code>sorter(node) → [keyComparator, valueComparatorOrFlag]
+</code></pre>
+<p>This tuple controls how each node computes:</p>
+<ul>
+<li><strong>sortedKeys</strong>   — ordering of its child keys</li>
+<li><strong>sortedValues</strong> — ordering of values (its equivalence class)</li>
+</ul></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="global.js.html">global.js</a>, <a href="global.js.html#line79">line 79</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".BY_DEPTH"><span class="type-signature">(static) </span>BY_DEPTH<span class="signature">(keyComparators, valueComparatorsOrFlags)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Creates a depth-aware <code>sorter(node)</code> function.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>keyComparators</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+|
+
+<span class="param-type">Array.&lt;function()></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>A key comparator or an array of comparators indexed by depth.<br>
+If a single function is provided, it is wrapped into an array.</p>
+<p>The comparator chosen for a node is:</p>
+<ul>
+<li><code>keyComparators[node.depth]</code> if it exists</li>
+<li>otherwise the <strong>last</strong> comparator in the array</li>
+</ul></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>valueComparatorsOrFlags</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+|
+
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">Array.&lt;(function()|boolean)></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Comparator(s) or boolean flag(s) controlling ordering of stored values.
+A single entry is upgraded to an array.</p>
+<ul>
+<li>comparator → values stored in a <code>SortedArray</code></li>
+<li>boolean    → values stored in an <code>ArrayQueue</code>
+<ul>
+<li><code>false</code> → FIFO</li>
+<li><code>true</code>  → LIFO</li>
+</ul>
+</li>
+</ul></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="global.js.html">global.js</a>, <a href="global.js.html#line125">line 125</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns a function that, for each node, selects:</p>
+<ul>
+<li>the appropriate <strong>key comparator</strong> based on depth</li>
+<li>the appropriate <strong>value comparator/flag</strong> based on depth</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const sorter = SORTER.BY_DEPTH([ORDER.ASCENDING, ORDER.DESCENDING], true);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".UNIFORM"><span class="type-signature">(static) </span>UNIFORM<span class="signature">(keyComparator, valueComparatorOrFlag)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Creates a <strong>uniform</strong> <code>sorter(node)</code> function where all nodes,
+at any depth, use the <strong>same</strong> key comparator and the <strong>same</strong>
+value comparator/flag.</p>
+<p>This is the opposite of <a href="SORTER.html#.BY_DEPTH"><code>SORTER.BY_DEPTH</code></a>.<br>
+Instead of varying by <code>node.depth</code>, the sorting strategy is
+globally consistent across the entire classifier.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>keyComparator</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Comparator used to order all child keys in every node.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>valueComparatorOrFlag</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Comparator or queue-flag used to order values in all nodes.</p>
+<ul>
+<li>comparator → values stored in a <code>SortedArray</code></li>
+<li>boolean    → values stored in an <code>ArrayQueue</code>
+<ul>
+<li><code>false</code> → FIFO</li>
+<li><code>true</code>  → LIFO</li>
+</ul>
+</li>
+</ul></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="global.js.html">global.js</a>, <a href="global.js.html#line166">line 166</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A <code>sorter(node)</code> function that always returns the same tuple.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const sorter = SORTER.UNIFORM(ORDER.ASCENDING, false);</code></pre>
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-global.html">global</a></li><li><a href="module-queue.html">queue</a></li></ul><h3>Namespaces</h3><ul><li><a href="ORDER.html">ORDER</a></li><li><a href="SORTER.html">SORTER</a></li></ul><h3>Classes</h3><ul><li><a href="ArrayQueue.html">ArrayQueue</a></li><li><a href="AsyncCollection.html">AsyncCollection</a></li><li><a href="Classifier.html">Classifier</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Queue.html">Queue</a></li><li><a href="SortedArray.html">SortedArray</a></li><li><a href="TrueSet.html">TrueSet</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sun Nov 16 2025 15:52:28 GMT+0100 (Ora standard dell’Europa centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -43,57 +43,109 @@
 
 
     <section>
-        <article><h1>@fizzwiz/sorted</h1>
+        <article><h1>☯️ @fizzwiz/sorted</h1>
 <p><strong>Sorted collections for JavaScript — powered by expressive equivalence.</strong></p>
-<p>The <code>@fizzwiz/sorted</code> library introduces sorted data structures to JavaScript, enabling powerful abstractions built around ordering, selection, and equivalence.</p>
-<h2>✨ Why Use This Library?</h2>
-<h3>🧬 Search-and-Select Pattern</h3>
-<p>At its core, <code>@fizzwiz/sorted</code> provides sorted queues — essential for implementing the 👉<a href="https://blog.fizzwiz.cloud/2025/06/search-and-select-pattern.html"><code>Search-and-Select</code></a> pattern . This pattern offers a clean, declarative approach to exploring solution spaces, particularly when paired with constructs like <code>Each</code> and <code>What</code> from <a href="https://fluent.blog.fizzwiz.cloud"><code>@fizzwiz/fluent</code></a>.</p>
-<h3>📣 A New Perspective on Equivalence</h3>
-<p>This library also introduces a powerful approach to <strong>object equivalence</strong>. Unlike JavaScript's built-in equality by value - which only applies to primitives - <code>@fizzwiz/sorted</code> lets you define <strong>custom equivalence classes</strong> using <strong>representation functions</strong>.</p>
-<p>This means you can group and sort objects based on structural, semantic, or domain-specific criteria — unlocking more meaningful comparisons in everyday code.</p>
-<h2>📦 Package Structure</h2>
-<p>The library is modular, with each component in its own directory:</p>
-<table>
-<thead>
-<tr>
-<th>Package</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>core</code></td>
-<td>Base abstractions — includes <code>Collection</code> and <code>Queue</code></td>
-</tr>
-<tr>
-<td><code>queue</code></td>
-<td>Queue implementations built on the <code>Queue</code> base class</td>
-</tr>
-</tbody>
-</table>
-<p>Each file in a package typically defines a single class.</p>
+<p><code>@fizzwiz/sorted</code> provides expressive, sorted data structures for JavaScript using <strong>ordering</strong>, <strong>selection</strong>, and <strong>equivalence</strong>.</p>
+<hr>
+<h3>📣 Equivalence</h3>
+<p>Instead of relying only on primitive equality, this library uses <strong>representation functions</strong> to define equivalence classes for objects. Comparators are used to sort keys and values. See <a href="https://sorted.blog.fizzwiz.cloud/2025/06/contemplating-true-set.html">Contemplating a True Set</a> for details.</p>
+<hr>
+<h2>🧩 Core Data Structures</h2>
+<h3><code>ArrayQueue</code>, <code>SortedArray</code>, <code>Classifier</code>, <code>TrueSet</code></h3>
+<ul>
+<li><strong><code>ArrayQueue</code></strong> – Array-like FIFO structure, duplicates allowed:</li>
+</ul>
+<pre class="prettyprint source lang-js"><code>import { ArrayQueue } from &quot;@fizzwiz/sorted&quot;;
+
+const queue = new ArrayQueue();
+
+queue.add('Bob');
+queue.add('Alice');
+queue.add('Bob');
+
+console.log(queue.toArray()); // ['Bob', 'Alice', 'Bob']
+</code></pre>
+<ul>
+<li><strong><code>SortedArray</code></strong> – Array sorted by a comparator, duplicates not allowed:</li>
+</ul>
+<pre class="prettyprint source lang-js"><code>import { SortedArray, ORDER } from &quot;@fizzwiz/sorted&quot;;
+const sorted = new SortedArray(ORDER.ASCENDING);
+
+sorted.add('Bob');
+sorted.add('Alice');
+sorted.add('Bob');
+
+console.log(sorted.toArray()); // ['Alice', 'Bob']
+</code></pre>
+<ul>
+<li><strong><code>Classifier</code></strong> – Tree of equivalence classes by key paths. Wildcards allowed:</li>
+</ul>
+<pre class="prettyprint source lang-js"><code>import { Classifier } from &quot;@fizzwiz/sorted&quot;;
+
+const classifier = new Classifier();
+
+classifier.add(['b','o','b'], 'Bob');
+classifier.add(['a','l','b','e','r','t'], 'Albert');
+
+const items = classifier.get([undefined, undefined, 'b']);  // undefined acts as wildcard
+
+console.log(items.toArray());   // ['Bob', 'Albert']
+</code></pre>
+<ul>
+<li><strong><code>TrueSet</code></strong> – Set with equivalence defined by a <code>repr(item)</code> function:</li>
+</ul>
+<pre class="prettyprint source lang-js"><code>import { TrueSet, ORDER, SORTER } from &quot;@fizzwiz/sorted&quot;;
+
+const repr = user => user.age;
+const trueSet = new TrueSet(repr, new Classifier(SORTER.UNIFORM(
+  ORDER.ASCENDING,            // for keys
+  ORDER.SINGULAR              // for items: only one item per equivalence class
+)));
+
+trueSet.add({name:'Alice', age:21});
+trueSet.add({name:'Bob', age:18});
+trueSet.add({name:'Carol', age:18}); // ignored
+
+console.log(trueSet.toArray()); // [{name:'Bob', age:18}, {name:'Alice', age:21}]
+</code></pre>
+<hr>
+<h2>🧩 Equivalence and Coexistence</h2>
+<p><code>Classifier</code> and <code>TrueSet</code> control whether equivalent items coexist or are aggregated:</p>
+<pre class="prettyprint source lang-js"><code>import { TrueSet, ORDER, SORTER } from &quot;@fizzwiz/sorted&quot;;
+
+const repr = user => user.age;
+const users = new TrueSet(repr, new Classifier(SORTER.UNIFORM(
+  ORDER.ASCENDING,            // for keys
+  ORDER.BY_PROPERTY('name')   // for items
+)));
+
+users.add({name:'Carol', age:21});
+users.add({name:'Bob', age:18});
+users.add({name:'Alice', age:18});
+
+console.log(users.toArray()); // [{name:'Alice', age:18},{name:'Bob', age:18},{name:'Carol', age:21}]
+console.log(users.classifier.get(18).toArray()); // [{name:'Alice', age:18},{name:'Bob', age:18}]
+</code></pre>
+<hr>
 <h2>🛠️ Installation &amp; Usage</h2>
 <h3>✅ Node.js (ES Modules)</h3>
-<p>Install via npm:</p>
 <pre class="prettyprint source lang-bash"><code>npm install @fizzwiz/sorted
 </code></pre>
-<p>Then import in your project</p>
+<pre class="prettyprint source lang-js"><code>import { ArrayQueue } from '@fizzwiz/sorted';
+const queue = new ArrayQueue();
+</code></pre>
 <h3>✅ Browser (via CDN)</h3>
-<p>Include the bundle directly in your HTML:</p>
-<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/fizzwiz/sorted@v0.0.0-dev.1/dist/sorted.bundle.js&quot;>&lt;/script>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/npm/@fizzwiz/sorted/dist/sorted.bundle.js&quot;>&lt;/script>
 &lt;script>
   const queue = new sorted.ArrayQueue();
 &lt;/script>
 </code></pre>
-<p>This exposes a global <code>sorted</code> object with all exported classes.</p>
+<hr>
 <h2>📄 Documentation</h2>
-<h3>📘 <strong>API Reference</strong></h3>
-<p>Explore the full API with jsDoc-style documentation:<br>
-🔗 <a href="https://fizzwiz.github.io/sorted">fizzwiz.github.io/sorted</a></p>
-<h3>🧠 <strong>Concepts, Guides &amp; Tutorials</strong></h3>
-<p>Understand the concepts behind sorting, equivalence, and expressive problem solving:<br>
-🔗 <a href="https://sorted-js.blogspot.com">sorted.blog.fizzwiz.cloud</a></p></article>
+<h3>📘 API Reference</h3>
+<p>🔗 <a href="https://fizzwiz.github.io/sorted">fizzwiz.github.io/sorted</a></p>
+<h3>🧠 Guides &amp; Tutorials</h3>
+<p>🔗 <a href="https://sorted.blog.fizzwiz.cloud">sorted.blog.fizzwiz.cloud</a></p></article>
     </section>
 
 
@@ -104,13 +156,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-global.html">global</a></li><li><a href="module-queue.html">queue</a></li></ul><h3>Classes</h3><ul><li><a href="ArrayQueue.html">ArrayQueue</a></li><li><a href="AsyncCollection.html">AsyncCollection</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Queue.html">Queue</a></li><li><a href="SortedArray.html">SortedArray</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ORDER">ORDER</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-global.html">global</a></li><li><a href="module-queue.html">queue</a></li></ul><h3>Namespaces</h3><ul><li><a href="ORDER.html">ORDER</a></li><li><a href="SORTER.html">SORTER</a></li></ul><h3>Classes</h3><ul><li><a href="ArrayQueue.html">ArrayQueue</a></li><li><a href="AsyncCollection.html">AsyncCollection</a></li><li><a href="Classifier.html">Classifier</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Queue.html">Queue</a></li><li><a href="SortedArray.html">SortedArray</a></li><li><a href="TrueSet.html">TrueSet</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Oct 13 2025 20:34:42 GMT+0200 (Ora legale dell’Europa centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sun Nov 16 2025 15:52:28 GMT+0100 (Ora standard dell’Europa centrale)
 </footer>
 
 <script> prettyPrint(); </script>
