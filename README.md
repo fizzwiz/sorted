@@ -1,4 +1,4 @@
-# ☯️ @fizzwiz/sorted
+# 👨‍👩‍👧‍👦 @fizzwiz/sorted
 
 **Sorted collections for JavaScript — powered by expressive equivalence.**
 
