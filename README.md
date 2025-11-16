@@ -122,6 +122,7 @@ const queue = new ArrayQueue();
   const queue = new sorted.ArrayQueue();
 </script>
 ```
+The global `sorted` object exposes all classes.
 
 ---
 
