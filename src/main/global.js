@@ -19,17 +19,15 @@ export const ORDER = {
      * Sorts primitive values in ascending order.
      * @memberof ORDER
      */
-    ASCENDING(a, b) {
-        a < b ? -1 : (a === b ? 0 : 1)
-    },
+    ASCENDING: (a, b) =>
+        a < b ? -1 : (a === b ? 0 : 1),
 
     /** 
      * Sorts primitive values in descending order. 
      * @memberof ORDER
      */
-    DESCENDING(a, b) {
-        a < b ? +1 : (a === b ? 0 : -1)
-    },
+    DESCENDING: (a, b) =>
+        a < b ? +1 : (a === b ? 0 : -1),
 
     /** 
      * No sorting; preserves insertion order. 
@@ -41,7 +39,7 @@ export const ORDER = {
      * Treats all values as equivalent.
      * @memberof ORDER
      */
-    SINGULAR(a, b) { return 0; },
+    SINGULAR: (a, b) => 0,
 
     /**
      * Creates a comparator that sorts objects by a given property.
@@ -135,6 +133,7 @@ export const SORTER = {
                 valueComparatorsOrFlags[valueComparatorsOrFlags.length - 1]
         ];
     },
+
 
     /**
      * Creates a **uniform** `sorter(node)` function where all nodes,

@@ -142,13 +142,13 @@ export class Classifier extends Queue {
     /**
      * Descends through a sequence of keys and returns the final node.
      *
-     * @param {Iterable<*>} keys - Sequence of keys to follow.
+     * @param {Iterable<*> | *} keys - Sequence of keys (or single key) to follow.
      * @param {boolean} [creating=false] - Whether to create missing nodes.
      * @returns {Classifier|undefined} - The descendant node, or undefined.
      */
     with(keys, creating = false) {
         let node = this;
-        for (const key of keys) {
+        for (const key of Each.as(keys)) {
             node = node.getChild(key, creating);
             if (!node) return undefined;
         }
@@ -223,7 +223,7 @@ export class Classifier extends Queue {
     /**
      * Returns `true` iff the sequence exists and ends at a terminating node.
      *
-     * @param {Iterable<*>} keys
+     * @param {Iterable<*> | *} keys (or key)
      * @returns {boolean}
      */
     has(keys) {
@@ -235,7 +235,7 @@ export class Classifier extends Queue {
      * Adds or removes occurrences of an entry >keys, obj> .
      * If `xTimes` > 0, missing nodes are created.
      *
-     * @param {Iterable<*>} keys
+     * @param {Iterable<*> | *} keys (or key)
      * @param {any} item
      * @param {number} [xTimes=1] - Positive to add, negative to remove. A float number is allowed.
      * @returns {boolean} - Whether the operation succeeded.
@@ -257,7 +257,7 @@ export class Classifier extends Queue {
      * - Updates `.nout` counters along ancestor nodes.
      * - Prunes nodes that become empty.
      *
-     * @param {Iterable<*>} keys - Sequence of keys representing the stored path.
+     * @param {Iterable<*> | *} keys - Sequence of keys (or key) representing the stored path.
      * @param {number} [xTimes=Infinity] - Maximum number of occurrences to remove.
      * @returns {boolean} `true` if any sequences were removed, `false` if the path did not exist.
      */
