@@ -94,4 +94,63 @@ describe('ArrayQueue', () => {
     });
   });
 
+  describe('Queue.select()', function() {
+
+    let q;
+
+    beforeEach(function() {
+        q = new ArrayQueue(true, [1, 2, 3, 4, 5]);
+
+    });
+
+    it('should keep the first n items and discard the rest', function() {
+        const discarded = q.select(2, true);
+        assert.deepStrictEqual(q.items, [1, 2]);
+        assert.deepStrictEqual(discarded, [3, 4, 5]);
+    });
+
+    it('should keep the last n items and discard the rest', function() {
+        const discarded = q.select(2, false);
+        assert.deepStrictEqual(q.items, [4, 5]);
+        assert.deepStrictEqual(discarded, [1, 2, 3]);
+    });
+
+    it('should discard nothing when n equals the length', function() {
+        const discarded = q.select(5);
+        assert.deepStrictEqual(q.items, [1, 2, 3, 4, 5]);
+        assert.deepStrictEqual(discarded, []);
+    });
+
+    it('should discard nothing when n is greater than the length', function() {
+        const discarded = q.select(10);
+        assert.deepStrictEqual(q.items, [1, 2, 3, 4, 5]);
+        assert.deepStrictEqual(discarded, []);
+    });
+
+    it('should discard everything when n is zero', function() {
+        const discarded = q.select(0);
+        assert.deepStrictEqual(q.items, []);
+        assert.deepStrictEqual(discarded, [1, 2, 3, 4, 5]);
+    });
+
+    it('should discard everything when n is negative', function() {
+        const discarded = q.select(-3);
+        assert.deepStrictEqual(q.items, []);
+        assert.deepStrictEqual(discarded, [1, 2, 3, 4, 5]);
+    });
+
+    it('should work with n = 1, first=true', function() {
+        const discarded = q.select(1, true);
+        assert.deepStrictEqual(q.items, [1]);
+        assert.deepStrictEqual(discarded, [2, 3, 4, 5]);
+    });
+
+    it('should work with n = 1, first=false', function() {
+        const discarded = q.select(1, false);
+        assert.deepStrictEqual(q.items, [5]);
+        assert.deepStrictEqual(discarded, [1, 2, 3, 4]);
+    });
+});
+
+
 });

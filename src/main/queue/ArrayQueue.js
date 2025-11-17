@@ -161,4 +161,31 @@ export class ArrayQueue extends Queue {
 
 		return view;
 	}
+
+	/**
+	 * Selects *in place* the first or last `n` items, returning the items that were removed.
+	 *
+	 * This overrides `Queue.select()` with a more performant batch implementation
+	 * using `Array.splice()`.
+	 *
+	 * Behavior:
+	 * - If `first === true`: keep the **first `n` items**, discard the rest.
+	 * - If `first === false`: keep the **last `n` items**, discard the rest.
+	 *
+	 * Edge cases:
+	 * - If `n >= this.items.length`, nothing is discarded.
+	 * - If `n <= 0`, all items are discarded.
+	 *
+	 * @param {number} n - Number of items to *keep*.
+	 * @param {boolean} [first=true] - Whether to keep items from the start (`true`) or end (`false`).
+	 * @returns {Array<*>} - The discarded items.
+	 * @override
+	 */
+	select(n, first = true) {
+		if (n < 0) n = 0;
+		const start = first? n: 0;
+		const m = Math.max(0, this.items.length - n);
+		const discarded = this.items.splice(start, m);
+		return discarded;
+	}
 }
