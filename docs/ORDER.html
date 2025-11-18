@@ -45,7 +45,7 @@ These comparators are intended for use in sorted collections such as <a href="Qu
 <li><strong>DESCENDING</strong>: Sorts values from largest to smallest.</li>
 <li><strong>INSERTION</strong>: Disables sorting; preserves insertion order.</li>
 <li><strong>SINGULAR</strong>: Treats all values as equivalent — only one unique item is kept.</li>
-<li><strong>BY_PROPERTY</strong>: Produces a comparator that sorts objects by a specified property.</li>
+<li><strong>BY_PROPERTY</strong>: Produces a comparator that sorts objects by one or more specified properties.</li>
 <li><strong>REVERSE</strong>: Produces a comparator that inverts another comparator.</li>
 </ul></div>
         
@@ -275,7 +275,7 @@ These comparators are intended for use in sorted collections such as <a href="Qu
     
 
     
-    <h4 class="name" id=".BY_PROPERTY"><span class="type-signature">(static) </span>BY_PROPERTY<span class="signature">(name, comparator<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id=".BY_PROPERTY"><span class="type-signature">(static) </span>BY_PROPERTY<span class="signature">(names, comparators<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {function}</span></h4>
     
 
     
@@ -283,8 +283,9 @@ These comparators are intended for use in sorted collections such as <a href="Qu
 
 
 <div class="description">
-    <p>Creates a comparator that sorts objects by a given property.
-The provided comparator is applied to the property values.</p>
+    <p>Creates a comparator function that sorts objects by one or more properties.
+Each property can have its own comparator; if fewer comparators than properties
+are provided, the last comparator is reused for the remaining properties.</p>
 </div>
 
 
@@ -324,13 +325,16 @@ The provided comparator is applied to the property values.</p>
 
         <tr>
             
-                <td class="name"><code>name</code></td>
+                <td class="name"><code>names</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;string></span>
 
 
             
@@ -352,20 +356,23 @@ The provided comparator is applied to the property values.</p>
                 </td>
             
 
-            <td class="description last"><p>The property name to compare.</p></td>
+            <td class="description last"><p>The property name or array of property names to compare.</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>comparator</code></td>
+                <td class="name"><code>comparators</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">function</span>
+|
+
+<span class="param-type">Array.&lt;function()></span>
 
 
             
@@ -391,7 +398,8 @@ The provided comparator is applied to the property values.</p>
                 </td>
             
 
-            <td class="description last"><p>Comparator applied to the property values.</p></td>
+            <td class="description last"><p>Comparator function(s) applied to property values.
+Defaults to <code>ORDER.ASCENDING</code>. Each comparator should follow the <code>(a, b) =&gt; number</code> convention.</p></td>
         </tr>
 
     
@@ -432,7 +440,7 @@ The provided comparator is applied to the property values.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="global.js.html">global.js</a>, <a href="global.js.html#line53">line 53</a>
+        <a href="global.js.html">global.js</a>, <a href="global.js.html#line63">line 63</a>
     </li></ul></dd>
     
 
@@ -461,7 +469,7 @@ The provided comparator is applied to the property values.</p>
 
         
 <div class="param-desc">
-    <p>Comparator that compares <code>a[name]</code> and <code>b[name]</code>.</p>
+    <p>A comparator function <code>(a, b) =&gt; number</code> that can be used in Array.sort or other sorting utilities.</p>
 </div>
 
 
@@ -481,6 +489,11 @@ The provided comparator is applied to the property values.</p>
     
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sort by single property 'age' ascendingarray.sort(ORDER.BY_PROPERTY('age'));// Sort by multiple properties: first 'age' ascending, then 'name' descendingarray.sort(ORDER.BY_PROPERTY(['age','name'], [ORDER.ASCENDING, ORDER.DESCENDING]));</code></pre>
 
 
 
@@ -682,7 +695,7 @@ The provided comparator is applied to the property values.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="global.js.html">global.js</a>, <a href="global.js.html#line73">line 73</a>
+        <a href="global.js.html">global.js</a>, <a href="global.js.html#line93">line 93</a>
     </li></ul></dd>
     
 
@@ -844,7 +857,7 @@ The provided comparator is applied to the property values.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Nov 17 2025 20:12:41 GMT+0100 (Ora standard dell’Europa centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Nov 18 2025 20:31:57 GMT+0100 (Ora standard dell’Europa centrale)
 </footer>
 
 <script> prettyPrint(); </script>

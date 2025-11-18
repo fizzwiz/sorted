@@ -7,7 +7,7 @@
  * - **DESCENDING**: Sorts values from largest to smallest.
  * - **INSERTION**: Disables sorting; preserves insertion order.
  * - **SINGULAR**: Treats all values as equivalent — only one unique item is kept.
- * - **BY_PROPERTY**: Produces a comparator that sorts objects by a specified property.
+ * - **BY_PROPERTY**: Produces a comparator that sorts objects by one or more specified properties.
  * - **REVERSE**: Produces a comparator that inverts another comparator.
  * 
  * @namespace ORDER
@@ -42,19 +42,39 @@ export const ORDER = {
     SINGULAR: (a, b) => 0,
 
     /**
-     * Creates a comparator that sorts objects by a given property.
-     * The provided comparator is applied to the property values.
+     * Creates a comparator function that sorts objects by one or more properties.
+     * Each property can have its own comparator; if fewer comparators than properties
+     * are provided, the last comparator is reused for the remaining properties.
      *
-     * @param {string} name - The property name to compare.
-     * @param {Function} [comparator=ORDER.ASCENDING] - Comparator applied to the property values.
-     * @returns {Function} Comparator that compares `a[name]` and `b[name]`.
+     * @param {string | string[]} names - The property name or array of property names to compare.
+     * @param {Function | Function[]} [comparators=ORDER.ASCENDING] - Comparator function(s) applied to property values.
+     *        Defaults to `ORDER.ASCENDING`. Each comparator should follow the `(a, b) => number` convention.
+     * @returns {Function} A comparator function `(a, b) => number` that can be used in Array.sort or other sorting utilities.
+     *
+     * @example
+     * // Sort by single property 'age' ascending
+     * array.sort(ORDER.BY_PROPERTY('age'));
+     *
+     * // Sort by multiple properties: first 'age' ascending, then 'name' descending
+     * array.sort(ORDER.BY_PROPERTY(['age','name'], [ORDER.ASCENDING, ORDER.DESCENDING]));
+     *
      * @memberof ORDER
      */
-    BY_PROPERTY(name, comparator = ORDER.ASCENDING) {
+    BY_PROPERTY(names, comparators = ORDER.ASCENDING) {
+        // Ensure arrays
+        if (!Array.isArray(names)) names = [names];
+        if (!Array.isArray(comparators)) comparators = [comparators];
+
         return (a, b) => {
-            const av = a?.[name];
-            const bv = b?.[name];
-            return comparator(av, bv);
+            for (let i = 0; i < names.length; i++) {
+                const name = names[i];
+                const av = a[name];
+                const bv = b[name];
+                const comparator = comparators[i] || comparators[comparators.length - 1];
+                const cmp = comparator(av, bv);
+                if (cmp !== 0) return cmp;
+            }
+            return 0;
         };
     },
 
