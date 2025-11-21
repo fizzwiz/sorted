@@ -1313,6 +1313,202 @@ If <code>xTimes</code> &gt; 0, missing nodes are created.</p>
     
 
     
+    <h4 class="name" id="children"><span class="type-signature"></span>children<span class="signature">(sorted<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Each.&lt;<a href="Classifier.html">Classifier</a>>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Returns the child classifier nodes.</p>
+<p>By default, children are returned in arbitrary iteration order
+(the natural order of <code>Map.prototype.values()</code>).</p>
+<p>If <code>sorted</code> is <code>true</code>, the children are returned in the order defined
+by <code>this.sortedKeys</code>, which stores the classifier's sorted key sequence.</p>
+<h2>Invariants</h2>
+<ul>
+<li>Every key in <code>this.sortedKeys</code> MUST correspond to an existing child
+in <code>this.keyToChild</code>.</li>
+<li>Therefore, calling this method with <code>sorted = true</code> will <em>never</em>
+return <code>undefined</code> elements.<br>
+If that happens, it indicates an internal consistency error elsewhere.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>No filtering is performed: missing children are treated as fatal
+structural violations and will propagate errors naturally.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sorted</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether to return children in sorted key order.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="queue_Classifier.js.html">queue/Classifier.js</a>, <a href="queue_Classifier.js.html#line398">line 398</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>An <code>Each</code> iterable of child classifier nodes.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Each.&lt;<a href="Classifier.html">Classifier</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="clear"><span class="type-signature"></span>clear<span class="signature">()</span><span class="type-signature"> &rarr; {void}</span></h4>
     
 
@@ -1434,25 +1630,24 @@ If <code>xTimes</code> &gt; 0, missing nodes are created.</p>
 
 
 <div class="description">
-    <p>Performs a depth-first traversal of the classifier tree, yielding
-<strong>every descendant node</strong> of the given starting node.</p>
+    <p>Performs a depth-first traversal of all <strong>descendant classifier nodes</strong>
+starting from this node. The node itself is <em>not</em> included.</p>
 <p>This is the primitive traversal operation used internally by
-<code>keys()</code>, <code>values()</code>, <code>entries()</code>, and <code>get()</code>.</p>
+<code>keys()</code>, <code>values()</code>, and <code>entries()</code>.</p>
 <hr>
-<h3>Matching rules (prefix filtering)</h3>
-<p>The optional <code>query</code> array restricts which children are explored:</p>
+<h3>Prefix filtering (<code>query</code>)</h3>
+<p>A <code>query</code> is an array of expected child keys at each depth:</p>
 <ul>
-<li><code>query[index]</code> is the required key at the current depth.</li>
-<li><code>undefined</code> acts as a wildcard: all child keys are accepted.</li>
-<li>Matching continues recursively with <code>index + 1</code>.</li>
+<li><code>query[d]</code> = required key at depth <code>d</code></li>
+<li><code>undefined</code> = wildcard → all keys here are accepted</li>
+<li>If <code>query.length === 0</code>, the traversal is unrestricted</li>
 </ul>
-<p>If <code>query</code> is empty, <strong>all</strong> descendants are visited.</p>
+<p>Matching proceeds depth-by-depth as the traversal descends.</p>
 <hr>
 <h3>Traversal order</h3>
-<p>If <code>first</code> is:</p>
 <ul>
-<li><code>true</code> → children are visited in ascending sorted order.</li>
-<li><code>false</code> → children are visited in reversed order.</li>
+<li><code>first = true</code> → children visited in sorted ascending key order</li>
+<li><code>first = false</code> → children visited in reversed order</li>
 </ul>
 <hr>
 </div>
@@ -1526,7 +1721,7 @@ If <code>xTimes</code> &gt; 0, missing nodes are created.</p>
                 </td>
             
 
-            <td class="description last"><p>Optional prefix keys to restrict traversal. <code>undefined</code> acts as a wildcard.</p></td>
+            <td class="description last"><p>Optional prefix constraint. <code>undefined</code> acts as a wildcard.</p></td>
         </tr>
 
     
@@ -1565,7 +1760,7 @@ If <code>xTimes</code> &gt; 0, missing nodes are created.</p>
                 </td>
             
 
-            <td class="description last"><p>Whether to traverse children in the normal (<code>true</code>) or reversed (<code>false</code>) order.</p></td>
+            <td class="description last"><p>Whether to traverse children in normal (<code>true</code>) or reversed (<code>false</code>) order.</p></td>
         </tr>
 
     
@@ -1604,8 +1799,7 @@ If <code>xTimes</code> &gt; 0, missing nodes are created.</p>
                 </td>
             
 
-            <td class="description last"><p>Internal recursion index indicating which position of <code>query</code> to match.
-Users should generally ignore this parameter.</p></td>
+            <td class="description last"><p>Internal recursion depth. Users should normally ignore this.</p></td>
         </tr>
 
     
@@ -1646,7 +1840,7 @@ Users should generally ignore this parameter.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="queue_Classifier.js.html">queue/Classifier.js</a>, <a href="queue_Classifier.js.html#line427">line 427</a>
+        <a href="queue_Classifier.js.html">queue/Classifier.js</a>, <a href="queue_Classifier.js.html#line458">line 458</a>
     </li></ul></dd>
     
 
@@ -1675,7 +1869,8 @@ Users should generally ignore this parameter.</p></td>
 
         
 <div class="param-desc">
-    <p>An <code>Each</code> iterable producing all matching descendant nodes in depth-first order.</p>
+    <p>An <code>Each</code> iterable yielding all matching descendant nodes,
+in depth-first search order.</p>
 </div>
 
 
@@ -1699,9 +1894,9 @@ Users should generally ignore this parameter.</p></td>
 
     <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>// Iterate over all nodes under the rootfor (const node of clf.descendants()) {    console.log(node.key);}</code></pre>
+    <pre class="prettyprint"><code>// Iterate all descendantsfor (const node of clf.descendants()) {    console.log(node.key);}</code></pre>
 
-    <pre class="prettyprint"><code>// Traverse only nodes under prefix ['a', undefined, 'c']const nodes = clf.descendants(['a', undefined, 'c'], true);console.log(nodes.toArray());</code></pre>
+    <pre class="prettyprint"><code>// Prefix-filtered traversal (e.g., only under ['A', *, 'C'])const nodes = clf.descendants(['A', undefined, 'C']);console.log(nodes.toArray());</code></pre>
 
 
 
@@ -1711,7 +1906,7 @@ Users should generally ignore this parameter.</p></td>
     
 
     
-    <h4 class="name" id="entries"><span class="type-signature">(generator) </span>entries<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;Array.&lt;*>, *>}</span></h4>
+    <h4 class="name" id="entries"><span class="type-signature"></span>entries<span class="signature">()</span><span class="type-signature"> &rarr; {Each.&lt;Array.&lt;Array.&lt;*>, *>>}</span></h4>
     
 
     
@@ -1719,8 +1914,12 @@ Users should generally ignore this parameter.</p></td>
 
 
 <div class="description">
-    <p>Returns an iterator over all <code>[keys, item]</code> pairs in the classifier.</p>
-<p>This is similar to <code>Map.prototype.entries()</code>.</p>
+    <p>Returns an iterable of <code>[keys, item]</code> pairs, similar to <code>Map.prototype.entries()</code>.</p>
+<ul>
+<li><code>keys</code> is the full key-path from the root to the node.</li>
+<li><code>item</code> is one element stored in that node's class.</li>
+</ul>
+<p>Only nodes with positive weight (<code>nin &gt; 0</code>) are included.</p>
 </div>
 
 
@@ -1764,7 +1963,7 @@ Users should generally ignore this parameter.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="queue_Classifier.js.html">queue/Classifier.js</a>, <a href="queue_Classifier.js.html#line495">line 495</a>
+        <a href="queue_Classifier.js.html">queue/Classifier.js</a>, <a href="queue_Classifier.js.html#line550">line 550</a>
     </li></ul></dd>
     
 
@@ -1789,13 +1988,11 @@ Users should generally ignore this parameter.</p></td>
 
 
 
-
-
-<h5>Yields:</h5>
+<h5>Returns:</h5>
 
         
 <div class="param-desc">
-    Each `[keys, item]` pair
+    <p>An <code>Each</code> iterable yielding <code>[keys, item]</code> pairs.</p>
 </div>
 
 
@@ -1806,7 +2003,7 @@ Users should generally ignore this parameter.</p></td>
     </dt>
     <dd>
         
-<span class="param-type">Array.&lt;Array.&lt;*>, *></span>
+<span class="param-type">Each.&lt;Array.&lt;Array.&lt;*>, *>></span>
 
 
     </dd>
@@ -1815,9 +2012,11 @@ Users should generally ignore this parameter.</p></td>
     
 
 
+
+
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>for (const [keys, item] of clf.entries()) {    console.log(keys, item);}</code></pre>
+    <pre class="prettyprint"><code>for (const [keys, value] of clf.entries()) {    console.log(keys, value);}</code></pre>
 
 
 
@@ -2610,7 +2809,7 @@ If <code>creating</code> is true and the child does not exist, it is created.</p
     
 
     
-    <h4 class="name" id="keys"><span class="type-signature">(generator) </span>keys<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;*>}</span></h4>
+    <h4 class="name" id="keys"><span class="type-signature"></span>keys<span class="signature">()</span><span class="type-signature"> &rarr; {Each.&lt;Array.&lt;*>>}</span></h4>
     
 
     
@@ -2618,7 +2817,9 @@ If <code>creating</code> is true and the child does not exist, it is created.</p
 
 
 <div class="description">
-    <p>Returns an iterator over all stored key sequences (paths) in the classifier.</p>
+    <p>Returns an iterable over all key-paths in the classifier.</p>
+<p>A “key-path” is an array of keys describing the path from the root
+to a node containing at least one stored item.</p>
 </div>
 
 
@@ -2662,7 +2863,7 @@ If <code>creating</code> is true and the child does not exist, it is created.</p
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="queue_Classifier.js.html">queue/Classifier.js</a>, <a href="queue_Classifier.js.html#line457">line 457</a>
+        <a href="queue_Classifier.js.html">queue/Classifier.js</a>, <a href="queue_Classifier.js.html#line494">line 494</a>
     </li></ul></dd>
     
 
@@ -2687,13 +2888,11 @@ If <code>creating</code> is true and the child does not exist, it is created.</p
 
 
 
-
-
-<h5>Yields:</h5>
+<h5>Returns:</h5>
 
         
 <div class="param-desc">
-    Each sequence of keys representing a path.
+    <p>An <code>Each</code> iterable yielding arrays of keys.</p>
 </div>
 
 
@@ -2704,13 +2903,15 @@ If <code>creating</code> is true and the child does not exist, it is created.</p
     </dt>
     <dd>
         
-<span class="param-type">Array.&lt;*></span>
+<span class="param-type">Each.&lt;Array.&lt;*>></span>
 
 
     </dd>
 </dl>
 
     
+
+
 
 
     <h5>Example</h5>
@@ -3986,7 +4187,7 @@ from the tree in reverse traversal order.</p>
     
 
     
-    <h4 class="name" id="values"><span class="type-signature">(generator) </span>values<span class="signature">()</span><span class="type-signature"> &rarr; {*}</span></h4>
+    <h4 class="name" id="values"><span class="type-signature"></span>values<span class="signature">()</span><span class="type-signature"> &rarr; {Each.&lt;*>}</span></h4>
     
 
     
@@ -3994,8 +4195,9 @@ from the tree in reverse traversal order.</p>
 
 
 <div class="description">
-    <p>Returns an iterator over all items stored in the classifier.</p>
-<p>Each item belongs to the equivalence class at its node.</p>
+    <p>Returns an iterable over <strong>all items</strong> stored anywhere in this
+classifier subtree.</p>
+<p>Items are drawn from the equivalence class stored at each node.</p>
 </div>
 
 
@@ -4039,7 +4241,7 @@ from the tree in reverse traversal order.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="queue_Classifier.js.html">queue/Classifier.js</a>, <a href="queue_Classifier.js.html#line476">line 476</a>
+        <a href="queue_Classifier.js.html">queue/Classifier.js</a>, <a href="queue_Classifier.js.html#line520">line 520</a>
     </li></ul></dd>
     
 
@@ -4064,13 +4266,11 @@ from the tree in reverse traversal order.</p>
 
 
 
-
-
-<h5>Yields:</h5>
+<h5>Returns:</h5>
 
         
 <div class="param-desc">
-    Each stored item
+    <p>An <code>Each</code> iterable yielding all stored items.</p>
 </div>
 
 
@@ -4081,7 +4281,7 @@ from the tree in reverse traversal order.</p>
     </dt>
     <dd>
         
-<span class="param-type">*</span>
+<span class="param-type">Each.&lt;*></span>
 
 
     </dd>
@@ -4090,9 +4290,11 @@ from the tree in reverse traversal order.</p>
     
 
 
+
+
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>for (const item of clf.values()) {    console.log(item);}</code></pre>
+    <pre class="prettyprint"><code>for (const value of clf.values()) {    console.log(value);}</code></pre>
 
 
 
@@ -4340,7 +4542,7 @@ from the tree in reverse traversal order.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Nov 18 2025 20:31:57 GMT+0100 (Ora standard dell’Europa centrale)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Nov 21 2025 20:14:47 GMT+0100 (Ora standard dell’Europa centrale)
 </footer>
 
 <script> prettyPrint(); </script>

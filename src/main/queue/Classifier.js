@@ -369,137 +369,199 @@ export class Classifier extends Queue {
         yield* this.get([], true);
     }
 
+    /**
+     * Returns the child classifier nodes.
+     *
+     * By default, children are returned in arbitrary iteration order
+     * (the natural order of `Map.prototype.values()`).
+     *
+     * If `sorted` is `true`, the children are returned in the order defined
+     * by `this.sortedKeys`, which stores the classifier's sorted key sequence.
+     *
+     * ## Invariants
+     * - Every key in `this.sortedKeys` MUST correspond to an existing child
+     *   in `this.keyToChild`.  
+     * - Therefore, calling this method with `sorted = true` will *never*
+     *   return `undefined` elements.  
+     *   If that happens, it indicates an internal consistency error elsewhere.
+     *
+     * ## Notes
+     * - No filtering is performed: missing children are treated as fatal
+     *   structural violations and will propagate errors naturally.
+     *
+     * @param {boolean} [sorted=false]
+     *     Whether to return children in sorted key order.
+     *
+     * @returns {Each<Classifier>}
+     *     An `Each` iterable of child classifier nodes.
+     */
+    children(sorted = false) {
+        return sorted
+            ? this.sortedKeys.sthen(key => this.keyToChild.get(key))
+            : Each.as(this.keyToChild.values());
+    }
+
     // ---------------------------------------------------------------------
     // Traversal
     // ---------------------------------------------------------------------
 
     /**
-     * Performs a depth-first traversal of the classifier tree, yielding
-     * **every descendant node** of the given starting node.
+     * Performs a depth-first traversal of all **descendant classifier nodes**
+     * starting from this node. The node itself is *not* included.
      *
      * This is the primitive traversal operation used internally by
-     * `keys()`, `values()`, `entries()`, and `get()`.
+     * `keys()`, `values()`, and `entries()`.
      *
      * ---
-     * ### Matching rules (prefix filtering)
+     * ### Prefix filtering (`query`)
      *
-     * The optional `query` array restricts which children are explored:
+     * A `query` is an array of expected child keys at each depth:
      *
-     * - `query[index]` is the required key at the current depth.
-     * - `undefined` acts as a wildcard: all child keys are accepted.
-     * - Matching continues recursively with `index + 1`.
+     * - `query[d]` = required key at depth `d`
+     * - `undefined` = wildcard → all keys here are accepted
+     * - If `query.length === 0`, the traversal is unrestricted
      *
-     * If `query` is empty, **all** descendants are visited.
+     * Matching proceeds depth-by-depth as the traversal descends.
      *
      * ---
      * ### Traversal order
      *
-     * If `first` is:
-     * - `true` → children are visited in ascending sorted order.
-     * - `false` → children are visited in reversed order.
+     * - `first = true` → children visited in sorted ascending key order
+     * - `first = false` → children visited in reversed order
      *
      * ---
-     * 
+     *
      * @param {Array<*>} [query=[]]
-     *     Optional prefix keys to restrict traversal. `undefined` acts as a wildcard.
-     *  
+     *     Optional prefix constraint. `undefined` acts as a wildcard.
+     *
      * @param {boolean} [first=true]
-     *     Whether to traverse children in the normal (`true`) or reversed (`false`) order.
-     * 
+     *     Whether to traverse children in normal (`true`) or reversed (`false`) order.
+     *
      * @param {number} [index=0]
-     *     Internal recursion index indicating which position of `query` to match.
-     *     Users should generally ignore this parameter.
+     *     Internal recursion depth. Users should normally ignore this.
      *
      * @returns {Each<Classifier>}
-     *     An `Each` iterable producing all matching descendant nodes in depth-first order.
+     *     An `Each` iterable yielding all matching descendant nodes,
+     *     in depth-first search order.
      *
      * @example
-     * // Iterate over all nodes under the root
+     * // Iterate all descendants
      * for (const node of clf.descendants()) {
      *     console.log(node.key);
      * }
      *
      * @example
-     * // Traverse only nodes under prefix ['a', undefined, 'c']
-     * const nodes = clf.descendants(['a', undefined, 'c'], true);
+     * // Prefix-filtered traversal (e.g., only under ['A', *, 'C'])
+     * const nodes = clf.descendants(['A', undefined, 'C']);
      * console.log(nodes.toArray());
      */
     descendants(query = [], first = true, index = 0) {
         if (!Array.isArray(query)) query = Each.as(query).toArray(); 
-        const node = this;
-        return Each.as(function*() {
-            const keys = first ? node.sortedKeys : [...node.sortedKeys].reverse();
-            const matchKey = query[index];
+        const self = this;
+        const got = {
+            *[Symbol.iterator]() {
+                const keys = first ? self.sortedKeys : [...self.sortedKeys].reverse();
+                const matchKey = query[index];
 
-            for (const key of keys) {
-                if (matchKey !== undefined && key !== matchKey) continue;
+                for (const key of keys) {
+                    if (matchKey !== undefined && key !== matchKey) continue;
 
-                const child = node.keyToChild.get(key);
-                if (!child) continue;
+                    const child = self.keyToChild.get(key);
+                    if (!child) continue;
 
-                yield child;
-                yield* child.descendants(query, first, index + 1);
+                    yield child;
+                    yield* child.descendants(query, first, index + 1);
+                }
             }
-        }());
+        }
+        return Each.as(got);
     }
 
     /**
-     * Returns an iterator over all stored key sequences (paths) in the classifier.
+     * Returns an iterable over all key-paths in the classifier.
      *
-     * @generator
-     * @yields {Array<*>} Each sequence of keys representing a path.
+     * A “key-path” is an array of keys describing the path from the root
+     * to a node containing at least one stored item.
+     *
+     * @returns {Each<Array<*>>}
+     *     An `Each` iterable yielding arrays of keys.
      *
      * @example
      * for (const keys of clf.keys()) {
      *     console.log(keys);
      * }
      */
-    *keys() {
-        for (const node of this.descendants()) {
-            if (node.nin > 0) yield node.path().toArray().map(node => node.key);
-        }
-    }
-
-    /**
-     * Returns an iterator over all items stored in the classifier.
-     *
-     * Each item belongs to the equivalence class at its node.
-     *
-     * @generator
-     * @yields {*} Each stored item
-     *
-     * @example
-     * for (const item of clf.values()) {
-     *     console.log(item);
-     * }
-     */
-    *values() {
-        for (const node of this.descendants()) {
-            yield* node.class;
-        }
-    }
-
-    /**
-     * Returns an iterator over all `[keys, item]` pairs in the classifier.
-     *
-     * This is similar to `Map.prototype.entries()`.
-     *
-     * @generator
-     * @yields {Array<Array<*>, *>} Each `[keys, item]` pair
-     *
-     * @example
-     * for (const [keys, item] of clf.entries()) {
-     *     console.log(keys, item);
-     * }
-     */
-    *entries() {
-        for (const node of this.descendants()) {
-            if (node.nin <= 0) continue;
-            const keys = node.path().toArray().map(node => node.key);
-            for (const item of node.class) {
-                yield [keys, item];
+    keys() {
+        const self = this;
+        const got = {
+            *[Symbol.iterator]() {
+                for (const node of self.descendants()) {
+                    if (node.nin > 0) yield node.path().toArray().map(next => next.key);
+                }
             }
-        }
+        };
+        return Each.as(got);
+    }
+
+    /**
+     * Returns an iterable over **all items** stored anywhere in this
+     * classifier subtree.
+     *
+     * Items are drawn from the equivalence class stored at each node.
+     *
+     * @returns {Each<*>}
+     *     An `Each` iterable yielding all stored items.
+     *
+     * @example
+     * for (const value of clf.values()) {
+     *     console.log(value);
+     * }
+     */
+    values() {
+        const self = this;
+        const got = {
+            *[Symbol.iterator]() {
+                for (const node of self.descendants()) {
+                    for (const item of node.class) yield item;
+                }
+            }
+        };
+
+        return Each.as(got);
+    }
+    
+
+    /**
+     * Returns an iterable of `[keys, item]` pairs, similar to `Map.prototype.entries()`.
+     *
+     * - `keys` is the full key-path from the root to the node.
+     * - `item` is one element stored in that node's class.
+     *
+     * Only nodes with positive weight (`nin > 0`) are included.
+     *
+     * @returns {Each<Array<Array<*>, *>>}
+     *     An `Each` iterable yielding `[keys, item]` pairs.
+     *
+     * @example
+     * for (const [keys, value] of clf.entries()) {
+     *     console.log(keys, value);
+     * }
+     */
+    entries() {
+        const self = this;
+        const got = {
+            *[Symbol.iterator]() {
+                for (const node of self.descendants()) {
+                    if (node.nin <= 0) continue;
+                    const keys = node.path().toArray().map(node => node.key);
+                    for (const item of node.class) {
+                        yield [keys, item];
+                    }
+                }
+            }
+        };
+
+        return Each.as(got);
     }  
 }
 

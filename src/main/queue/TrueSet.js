@@ -38,8 +38,8 @@ export class TrueSet extends Queue {
     // -----------------------------------------------------------
 
     /** @returns {Iterator<*>} Iterates stored items */
-    [Symbol.iterator]() { 
-        return this.classifier.values(); 
+    *[Symbol.iterator]() { 
+        yield* this.classifier.values(); 
     }
 
     /** Total number of stored items */
