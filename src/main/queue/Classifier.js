@@ -528,8 +528,7 @@ export class Classifier extends Queue {
         };
 
         return Each.as(got);
-    }
-    
+    }    
 
     /**
      * Returns an iterable of `[keys, item]` pairs, similar to `Map.prototype.entries()`.
@@ -553,7 +552,7 @@ export class Classifier extends Queue {
             *[Symbol.iterator]() {
                 for (const node of self.descendants()) {
                     if (node.nin <= 0) continue;
-                    const keys = node.path().toArray().map(node => node.key);
+                    const keys = node.path().toArray().map(next => next.key);
                     for (const item of node.class) {
                         yield [keys, item];
                     }
